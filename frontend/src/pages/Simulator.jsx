@@ -15,8 +15,16 @@ const EXAMPLES = {
 };
 const pretty = (tool) => JSON.stringify(EXAMPLES[tool].params, null, 2);
 const field = "mt-1 w-full rounded border border-stone-300 bg-white px-3 py-2";
+const makeTraceId = () => `demo-${crypto.randomUUID()}`;
 
 export default function Simulator() {
+  const [traceId, setTraceId] = useState(() => {
+    const saved = sessionStorage.getItem("pygenic-demo-trace-id");
+    if (saved) return saved;
+    const fresh = makeTraceId();
+    sessionStorage.setItem("pygenic-demo-trace-id", fresh);
+    return fresh;
+  });
   const [form, setForm] = useState({
     role: EXAMPLES.read_file.role, tool: "read_file", action: "Execute", params: pretty("read_file"),
   });
@@ -37,6 +45,11 @@ export default function Simulator() {
 
   const manualRef = useRef(null);
   const [loaded, setLoaded] = useState(null);
+  const resetTrace = () => {
+    const fresh = makeTraceId();
+    sessionStorage.setItem("pygenic-demo-trace-id", fresh);
+    setTraceId(fresh); setResult(null); setLoaded(null); setError("");
+  };
   const loadScenario = (s) => {
     setForm({ role: s.role, tool: s.tool, action: s.action, params: JSON.stringify(s.params, null, 2) });
     setResult(null); setError(""); setLoaded(s);
@@ -49,7 +62,7 @@ export default function Simulator() {
     let params;
     try { params = JSON.parse(form.params || "{}"); } catch { return setError("Parameters must be valid JSON."); }
     setBusy(true);
-    try { setResult(await evaluate({ ...form, params })); }
+    try { setResult(await evaluate({ ...form, params, trace_id: traceId })); }
     catch { setError("Could not evaluate the request. Check that the backend is running on port 8000 and that parameters are a JSON object."); }
     finally { setBusy(false); }
   }
@@ -59,7 +72,11 @@ export default function Simulator() {
       <QuickScenarios onSelect={loadScenario} loaded={loaded} />
       <AgentOutput onPopulate={populate} />
       <section ref={manualRef} className="scroll-mt-4 rounded-lg bg-white p-6 shadow-sm">
-        <h2 className="mb-1 text-xl font-semibold text-stone-900">Manual simulator</h2>
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div><h2 className="mb-1 text-xl font-semibold text-stone-900">Manual simulator</h2>
+            <p className="text-xs text-stone-500">Adaptive demo trace: {traceId.slice(0, 18)} · history is isolated to this browser session.</p></div>
+          <button type="button" onClick={resetTrace} className="rounded border border-stone-300 px-3 py-1.5 text-sm hover:bg-stone-50">Reset adaptive demo</button>
+        </div>
         {loaded && <p className="mb-4 text-sm text-stone-600">Loaded "{loaded.label}". {loaded.hint} Click Run Guardrail Check to execute.</p>}
         <div className="mb-4" />
     <div className="grid gap-8 md:grid-cols-2">

@@ -14,4 +14,6 @@ export const SCENARIOS = [
     params: { ...pay, amount: -5000 }, hint: "Expected: Block (VAL-001)." },
   { icon: "❌", label: "Invalid File Path", tone: "bad", role: "Viewer", tool: "read_file", action: "Read",
     params: { path: "" }, hint: "Expected: Block (VAL-001)." },
+  { icon: "ℹ️", label: "Adaptive Policy Demo", tone: "warn", role: "Viewer", tool: "read_file", action: "Read",
+    params: { path: "" }, hint: "Run this invalid request three times, then retry with path /documents/company_policy.pdf to see ADP-001 warn using recent trace evidence." },
 ];

@@ -1,6 +1,6 @@
-# TrustNet AI – AI Agent Reliability & Guardrail Engine
+# TrustNet-AI – Enterprise AI Trust & Security Platform
 
-Hackathon MVP. An agent request (role, tool, action, parameters) is checked **before execution** and gets
+TrustNet-AI checks each agent request (role, tool, action, parameters) **before execution** and returns
 a decision (Allow / Warn / Block), risk type, violated rule, explanation and a 0–100 reliability score.
 
 Checks, in order: **A** unauthorized action (role rules in `policies.json`) → **B** invalid/hallucinated
@@ -10,6 +10,7 @@ parameters (Pydantic, unknown fields rejected) → **D** policy violation (`poli
 ## Folder structure
 ```
 backend/   main.py (API + decision engine), validator.py (Pydantic), policy_engine.py,
+           email_service.py, dns_service.py, analysis_service.py,
            database.py (SQLite: policies + logs), policies.json
 frontend/  src/pages (Home, Simulator, Dashboard), src/components, src/services
 ```
@@ -21,6 +22,14 @@ python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\act
 pip install -r requirements.txt
 uvicorn main:app --reload
 ```
+
+### Personal Email Check
+
+The Personal Email Check performs syntax, DNS, disposable-provider, and address-pattern checks without sending email. DNS can assess the provider domain, but it cannot confirm whether an individual mailbox such as `name@gmail.com` exists. Use Content Analysis to assess an incoming message's sender, subject, body, and URLs.
+
+Content Analysis accepts optional original `Authentication-Results` and `Received-SPF` headers. These are treated as supporting evidence because text pasted into the form cannot be independently authenticated. Email bodies are analyzed in memory and are not stored in audit records; audit history keeps the sender, subject, decision, score, and summary.
+
+For deployments outside local development, set `CORS_ALLOW_ORIGINS` to a comma-separated list of trusted frontend origins. The API currently has no user authentication and should not be exposed directly to an untrusted network.
 
 ## Run the frontend (port 5173)
 ```
@@ -38,6 +47,27 @@ Open http://localhost:5173. To use another API address, set `VITE_API_URL`.
   and validation readiness, from the backend `GET /health` endpoint (refreshes every 10 s).
 - **Dashboard**: colored cards (blue total, green allowed, red blocked, yellow warnings), average reliability score,
   risk-type pie chart and request history; refreshes every 5 s.
+
+## Live URL Threat Checks
+
+Email Content Analysis checks extracted URLs against the public
+[Phishing.Database feed](https://github.com/Phishing-Database/Phishing.Database) when the user enables the
+checkbox. The feed needs no key; it is cached for an hour and compared locally. Optionally set
+`VIRUSTOTAL_API_KEY` in `backend/.env` to query existing VirusTotal URL reports. VirusTotal receives the
+extracted URLs (not the sender, subject, or body). The integration only retrieves existing reports; it does
+not submit or rescan URLs. VirusTotal's free Community API is limited to 4 requests per minute and is not
+permitted for commercial products or services. A match is threat evidence, but a no-match does not prove a
+URL safe. If the feed or VirusTotal is unavailable, those results are shown as unknown. Copy
+`backend/.env.example` to `backend/.env` to configure either optional setting, then start Uvicorn from
+`backend/` with `uvicorn main:app --reload --env-file .env`. Keep `.env` untracked.
+## Repeatable Adaptive Guardrail Demo
+
+In Simulator, click **Reset adaptive demo**, load **Adaptive Policy Demo**, and run the invalid request three
+times. Then change the path parameter to `/documents/company_policy.pdf` and run it. The fourth request
+should show WARN (ADP-001) with the three blocked requests as evidence. The demo trace is isolated to the
+current browser session and reset does not delete audit history.
+
+Run backend checks from `backend/` with `python -m unittest discover -s tests`.
 
 ## AI Agent Output (simulate a real agent)
 The top section of the Simulator page accepts a JSON tool call produced by an AI agent (Aurelia Learn,

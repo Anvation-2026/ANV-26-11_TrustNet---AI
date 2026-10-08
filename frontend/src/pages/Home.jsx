@@ -3,7 +3,7 @@ export default function Home({ go }) {
     <section className="max-w-2xl">
       <h1 className="text-4xl font-semibold text-stone-900">Stop unsafe agent actions before they run.</h1>
       <p className="mt-4 text-lg text-stone-600">
-        TrustNet AI checks every AI-agent request for unauthorized actions, invalid parameters,
+        TrustNet-AI checks every AI-agent request for unauthorized actions, invalid parameters,
         redundant calls and policy violations, then returns Allow, Warn or Block with a reason and a reliability score.
       </p>
       <div className="mt-8 flex gap-3">

@@ -7,7 +7,7 @@ import { DecisionBadge } from "../components/DecisionCard";
 
 const DECISION_COLORS = { Allow: "#10b981", Warn: "#eab308", Block: "#ef4444" };
 const RISK_COLORS = { "Unauthorized Action": "#e11d48", "Invalid Parameter": "#f59e0b",
-  "Redundant Call": "#0ea5e9", "Policy Violation": "#7c3aed" };
+  "Redundant Call": "#0ea5e9", "Policy Violation": "#7c3aed", "Adaptive Behavior": "#6366f1", Low: "#10b981", Medium: "#eab308", High: "#ef4444" };
 const barTone = (n) => (n >= 80 ? "bg-emerald-500" : n >= 50 ? "bg-amber-500" : "bg-rose-500");
 const card = "rounded-lg bg-white p-5 shadow-sm";
 
