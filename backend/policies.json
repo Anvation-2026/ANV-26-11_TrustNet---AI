@@ -1,0 +1,7 @@
+[
+  {"id": "POL-001", "tool": "delete_user", "category": "Unauthorized Action", "allowed_roles": ["Admin"], "message": "The request was blocked because a {role} role does not have permission to delete user accounts."},
+  {"id": "POL-002", "tool": "export_data", "category": "Policy Violation", "allowed_roles": ["Admin"], "message": "The request was blocked because data export is restricted to Admins, and a {role} role cannot export data."},
+  {"id": "POL-003", "tool": "process_payment", "category": "Unauthorized Action", "allowed_roles": ["Admin", "Teacher"], "message": "The request was blocked because a {role} role does not have permission to process payments."},
+  {"id": "POL-004", "tool": "process_payment", "category": "Policy Violation", "max_amount": 100000, "message": "The request was blocked because payments above 100000 are not allowed for agents."},
+  {"id": "POL-005", "tool": "send_email", "category": "Unauthorized Action", "allowed_roles": ["Admin", "Teacher"], "message": "The request was blocked because a {role} role does not have permission to send emails."}
+]
