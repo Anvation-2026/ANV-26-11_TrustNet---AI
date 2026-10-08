@@ -15,13 +15,23 @@ backend/   main.py (API + decision engine), validator.py (Pydantic), policy_engi
 frontend/  src/pages (Home, Simulator, Dashboard), src/components, src/services
 ```
 
-## Run the backend (port 8000)
+## One-time backend setup
+
+Create the Python environment and install backend dependencies once:
+
 ```
 cd backend
-python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
+python -m venv .venv
+# Windows: .venv\Scripts\activate
+# macOS/Linux: source .venv/bin/activate
 pip install -r requirements.txt
-uvicorn main:app --reload
 ```
+
+## Start the app
+
+From `frontend/`, run `npm run dev`. Vite automatically starts the FastAPI backend on port 8000,
+loads `backend/.env` when present, and stops the backend when the frontend dev server closes. If the
+backend is already running on port 8000, Vite reuses it. Backend output appears in the same terminal.
 
 ### Personal Email Check
 
