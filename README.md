@@ -39,6 +39,16 @@ npm run dev
 ```
 Open http://localhost:5173. To use another API address, set `VITE_API_URL`.
 
+## Deploy to Vercel
+
+Set the Vercel project's **Root Directory** to the repository root (not `frontend`). The root
+`main.py` serves the FastAPI routes under `/api`, and `vercel.json` builds the Vite frontend from
+`frontend/`. The frontend and API then share one origin, so `VITE_API_URL` is not needed.
+
+On Vercel, SQLite uses temporary function storage. Guardrail requests can run, but audit history is
+not durable across cold starts or separate function instances; use a shared database for persistent
+production history.
+
 ## Quick Demo Scenarios and System Status
 - **Quick Demo Scenarios** (top of the Simulator page): Safe Email, Unauthorized Delete User, Invalid Email,
   Duplicate Payment, Invalid Payment Amount, Invalid File Path. A click fills the manual simulator
