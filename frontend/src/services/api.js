@@ -6,7 +6,7 @@ async function req(path, opts) {
     res = await fetch(BASE + path, opts);
   } catch {
     throw new Error(
-      `Cannot reach the API at ${BASE}. Start the app with "npm run dev" from the frontend folder; this also starts the backend. Check the terminal for backend startup errors.`,
+      `Cannot reach the API at ${BASE}. Start the backend with "uvicorn main:app --reload" from the backend folder, or set VITE_API_URL to your backend URL.`,
     );
   }
   if (!res.ok) {
