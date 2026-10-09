@@ -2,5 +2,10 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "fastapi",
   "installCommand": "npm install",
-  "buildCommand": "VITE_API_URL=/api npm run build"
+  "buildCommand": "VITE_API_URL=/api npm run build",
+  "functions": {
+    "main.py": {
+      "includeFiles": "backend/policies.json"
+    }
+  }
 }
