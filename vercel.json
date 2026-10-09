@@ -1,5 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "fastapi",
-  "buildCommand": "npm run build"
+  "installCommand": "npm install",
+  "buildCommand": "VITE_API_URL=/api npm run build"
 }

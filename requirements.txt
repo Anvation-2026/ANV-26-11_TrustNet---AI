@@ -1,1 +1,6 @@
--r backend/requirements.txt
+fastapi>=0.143.0
+uvicorn
+pydantic>=2
+email-validator>=2
+dnspython>=2.4
+python-dotenv
